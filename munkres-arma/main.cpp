@@ -1,5 +1,6 @@
-/*
- *   Copyright (c) 2015 Miroslav Krajicek
+﻿/*
+ *   Copyright (c) 2007 John Weaver
+ *   Copyright (c) 2015 Seonho Oh
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -14,10 +15,28 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- */
+*/
 
-#include "boostmatrixadapter.h"
+#include "munkres.hpp"
 
-template class BoostMatrixAdapter<double>;
-template class BoostMatrixAdapter<float>;
-template class BoostMatrixAdapter<int>;
+int main(int argc, char* argv[])
+{
+	int nrows = 4,
+		ncols = 3;
+
+	if ( argc == 3 ) {
+		nrows = atoi(argv[1]);
+		ncols = atoi(argv[2]);
+	}
+
+	// Initialize matrix with random values.
+	arma::mat cost = arma::conv_to<arma::mat>::from(arma::randi(nrows, ncols, arma::distr_param(1, 50)));
+	cost.print("cost = ");
+
+	// Apply Munkres algorithm to cost matrix.
+	munkres<double> m;
+	auto assignments = m.solve(cost);
+	assignments.print("assignments = ");
+
+	return 0;
+}
